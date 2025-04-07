@@ -8,10 +8,13 @@ using TMPro;
 public class PlayerController : MonoBehaviour
 {
  // Rigidbody of the player.
- private Rigidbody rb; 
-
+ private Rigidbody rb;
 
  private int jumpsLeft = 2;
+
+ private bool braking = false;
+
+ private bool onGround = true;
 
  // Variable to keep track of collected "PickUp" objects.
  private int count;
@@ -70,21 +73,29 @@ public float jumpForce = 0;
 
 
  // Apply force to the Rigidbody to move the player.
-        rb.AddForce(movement * speed);
 
 
-              if(Input.GetKeyDown(KeyCode.Space) && jumpsLeft > 0){
+              if(Input.GetKey(KeyCode.F) && onGround == true){
+                     Debug.Log("braking!");
+                     braking = true;
+                     Vector3 newVelocity = new Vector3 (rb.linearVelocity.x * -0.3f, 0, rb.linearVelocity.z * -0.3f);
+                     //rb.linearVelocity = newVelocity;
+                     rb.AddForce(newVelocity);
+
+              }else {
+                     braking = false;
+              }
+
+               if(braking != true && onGround == true){
+                     rb.AddForce(movement * speed);
+               }
+
+
+
+              if(Input.GetKeyDown(KeyCode.Space) && jumpsLeft > 0 && braking != true){
                      Debug.Log("jumping!");
                       rb.AddForce(jump);
                       jumpsLeft -= 1;
-
-              }
-
-
-              if(Input.GetKey(KeyCode.F)){
-                     Debug.Log("braking!");
-                     Vector3 newVelocity = new Vector3 (rb.linearVelocity.x * 0.99f, rb.linearVelocity.y, rb.linearVelocity.z * 0.99f);
-                     rb.linearVelocity = newVelocity;
 
               }
         
@@ -96,6 +107,7 @@ private void OnCollisionEnter (Collision collision)
        {
               Debug.Log ("enter");
              jumpsLeft = 2;
+             onGround = true;
 
        }
 }
@@ -106,6 +118,8 @@ private void OnCollisionExit (Collision collision)
        {
               Debug.Log ("exiting");
               jumpsLeft = 1;
+              onGround = false;
+
        }
 }
 
