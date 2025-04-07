@@ -78,7 +78,15 @@ public float jumpForce = 0;
                       rb.AddForce(jump);
                       jumpsLeft -= 1;
 
-       }
+              }
+
+
+              if(Input.GetKey(KeyCode.F)){
+                     Debug.Log("braking!");
+                     Vector3 newVelocity = new Vector3 (rb.linearVelocity.x * 0.99f, rb.linearVelocity.y, rb.linearVelocity.z * 0.99f);
+                     rb.linearVelocity = newVelocity;
+
+              }
         
     }
 
